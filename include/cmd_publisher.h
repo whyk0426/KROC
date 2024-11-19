@@ -18,7 +18,7 @@ private:
 
   void timer_cmd_callback();
 
-  double G[3];
+  double G[3] = {0, 0, PI};
 
   double real_x = 0;
   double real_y = 0;

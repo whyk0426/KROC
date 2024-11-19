@@ -31,8 +31,9 @@ def generate_launch_description():
     turtlebot3_cartographer_prefix = get_package_share_directory('ros2_turtlebot_controller')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
                                                   turtlebot3_cartographer_prefix, 'config'))
-    #configuration_basename = LaunchConfiguration('configuration_basename',
-                                                # default='Alpha_lds_2d.lua')
+    #
+    # configuration_basename = LaunchConfiguration('configuration_basename',
+    #                                              default='Alpha_lds_2d.lua')
     configuration_basename = 'Alpha_lds_2d.lua'
 
     resolution = LaunchConfiguration('resolution', default='0.05')
