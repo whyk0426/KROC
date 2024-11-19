@@ -48,31 +48,39 @@ def generate_launch_description():
             namespace='Lima',
             executable='cmd_publisher_node',
             output='screen',
+            parameters=[{'goal': [1, 1, PI]},
+                        {'robot_name': 'Lima'},                        
+                        ],
             remappings=[
-                ('/cmd_vel','/Lima/cmd_vel'),
-                ('/imu_link', '/Lima/Lima_imu_link'),
+                #('cmd_vel','/Lima/cmd_vel'),
+                #('/imu_link', '/Lima/Lima_imu_link'),
                 #('/map', '/Lima/map'),
             ]
         ),
+
         Node(
             package='ros2_turtlebot_controller',
             namespace='Alpha',
             executable='cmd_publisher_node',
             output='screen',
+            parameters=[{'goal': [2, 1, PI]},
+                        {'robot_name': 'Alpha'},  
+                        ],
             remappings=[
-                ('/cmd_vel','/Alpha/cmd_vel'),
-                ('imu_link', 'Alpha_imu_link'),
+                #('/cmd_vel','/Alpha/cmd_vel'),
+                #('imu_link', 'Alpha_imu_link'),
                 #('/map', '/Alpha/map'),
             ]
         ),
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            output='screen',
-            arguments=['-d', rviz_file],
-            parameters=[{'use_sim_time': True}]
-        ),
+
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     name='rviz2',
+        #     output='screen',
+        #     arguments=['-d', rviz_file],
+        #     parameters=[{'use_sim_time': True}]
+        # ),
         
         Node(
             package='merge_map',

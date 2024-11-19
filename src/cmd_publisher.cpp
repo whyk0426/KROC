@@ -6,7 +6,7 @@ using std::placeholders::_1;
 
 CmdPublisher::CmdPublisher() : Node("cmd_publisher") {
   // Publisher
-  pub_cmd = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
+  pub_cmd = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
 
   // TF listener
   tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
@@ -27,21 +27,35 @@ CmdPublisher::CmdPublisher() : Node("cmd_publisher") {
   } else {
     RCLCPP_ERROR(this->get_logger(), "Goal must have exactly 3 elements.");
   }
+
+  this->declare_parameter<std::string>("robot_name", "robot_name");
+
+  this->get_parameter("robot_name", robot_name);
+
 }
 
 void CmdPublisher::timer_tf_callback() {
   //TODO: implement this!
   geometry_msgs::msg::TransformStamped t;
 
+  // try {
+  //   geometry_msgs::msg::TransformStamped t = tf_buffer_.lookupTransform(
+  //     "map", robot_name + "_imu_link", tf2::TimePointZero);
+  // } catch (const tf2::TransformException &ex) {
+  //     RCLCPP_INFO(this->get_logger(), "Could not transform: %s", ex.what());
+  //     return;
+  // }
+
   try {
     t = tf_buffer->lookupTransform(
-      "map", "imu_link", tf2::TimePointZero);
+      "map", robot_name + "_imu_link", tf2::TimePointZero);
   } catch (const tf2::TransformException & ex) {
     RCLCPP_INFO(
       this->get_logger(), "Could not transform %s",
       ex.what());
     return;
   }
+
   double z = t.transform.rotation.z;
   double w = t.transform.rotation.w;
 
@@ -122,6 +136,7 @@ void CmdPublisher::timer_cmd_callback() {
   else if (cmd_vel.angular.z < -2.84)
     cmd_vel.angular.z = -2.84; 
   
+  RCLCPP_INFO(this->get_logger(), "destination [%f, %f]", goal_x, goal_y);
   RCLCPP_INFO(this->get_logger(), "error_d [%f, %f]", error_d, error_th);
   RCLCPP_INFO(this->get_logger(), "cmd_vel: [%f, %f]", cmd_vel.linear.x, cmd_vel.angular.z);
 

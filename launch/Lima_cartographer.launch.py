@@ -38,9 +38,9 @@ def generate_launch_description():
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
-    rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),
-                                   'rviz', 'tb3_cartographer.rviz')
-    # rviz_config_dir = '~/merged_map.rviz'
+    # rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),
+    #                                'rviz', 'tb3_cartographer.rviz')
+    rviz_config_dir = '/home/yk/merged_map.rviz'
 
     return LaunchDescription([
         DeclareLaunchArgument(

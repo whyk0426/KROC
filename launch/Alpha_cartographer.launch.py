@@ -31,7 +31,6 @@ def generate_launch_description():
     turtlebot3_cartographer_prefix = get_package_share_directory('ros2_turtlebot_controller')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
                                                   turtlebot3_cartographer_prefix, 'config'))
-    #
     # configuration_basename = LaunchConfiguration('configuration_basename',
     #                                              default='Alpha_lds_2d.lua')
     configuration_basename = 'Alpha_lds_2d.lua'
@@ -85,11 +84,11 @@ def generate_launch_description():
                               'publish_period_sec': publish_period_sec}.items(),
         ),
 
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_dir],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen'),
+        # Node(
+        #     package='rviz2',
+        #     executable='rviz2',
+        #     name='rviz2',
+        #     arguments=['-d', rviz_config_dir],
+        #     parameters=[{'use_sim_time': use_sim_time}],
+        #     output='screen'),
     ])
