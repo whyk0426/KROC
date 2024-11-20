@@ -19,17 +19,23 @@ CmdPublisher::CmdPublisher() : Node("cmd_publisher") {
       10ms, std::bind(&CmdPublisher::timer_cmd_callback, this));
 
   // Parameters
-  this->declare_parameter<std::vector<double>>("goal", {0, 0, 0});
-
-  std::vector<double> goal_param = this->get_parameter("goal").as_double_array();
-  if (goal_param.size() == 3) {
-    std::copy(goal_param.begin(), goal_param.end(), G);
+  this->declare_parameter<std::vector<double>>("goal1", {0, 0, 0, 0, 0, 0});
+  std::vector<double> goal1_param = this->get_parameter("goal1").as_double_array();
+  if (goal1_param.size() == 6) {
+    std::copy(goal1_param.begin(), goal1_param.end(), G1);
   } else {
-    RCLCPP_ERROR(this->get_logger(), "Goal must have exactly 3 elements.");
+    RCLCPP_ERROR(this->get_logger(), "Goal1 must have exactly 6 elements.");
   }
 
-  this->declare_parameter<std::string>("robot_name", "robot_name");
+  // this->declare_parameter<std::vector<double>>("goal2", {0, 0, 0});
+  // std::vector<double> goal2_param = this->get_parameter("goal2").as_double_array();
+  // if (goal2_param.size() == 3) {
+  //   std::copy(goal2_param.begin(), goal2_param.end(), G2);
+  // } else {
+  //   RCLCPP_ERROR(this->get_logger(), "Goal2 must have exactly 3 elements.");
+  // }
 
+  this->declare_parameter<std::string>("robot_name", "robot_name");
   this->get_parameter("robot_name", robot_name);
 
 }
@@ -37,14 +43,6 @@ CmdPublisher::CmdPublisher() : Node("cmd_publisher") {
 void CmdPublisher::timer_tf_callback() {
   //TODO: implement this!
   geometry_msgs::msg::TransformStamped t;
-
-  // try {
-  //   geometry_msgs::msg::TransformStamped t = tf_buffer_.lookupTransform(
-  //     "map", robot_name + "_imu_link", tf2::TimePointZero);
-  // } catch (const tf2::TransformException &ex) {
-  //     RCLCPP_INFO(this->get_logger(), "Could not transform: %s", ex.what());
-  //     return;
-  // }
 
   try {
     t = tf_buffer->lookupTransform(
@@ -72,8 +70,16 @@ void CmdPublisher::timer_cmd_callback() {
     return;
   }
   geometry_msgs::msg::Twist cmd_vel;
-  goal_x = G[0];
-  goal_y = G[1];
+
+  if (a==0){
+    goal_x = G1[0];
+    goal_y = G1[1];
+  }
+  else if (a==1){
+    goal_x = G1[3];
+    goal_y = G1[4];
+  }
+
   double d_x = goal_x - real_x;
   double d_y = goal_y - real_y;
 
@@ -106,7 +112,11 @@ void CmdPublisher::timer_cmd_callback() {
 
   if (error_d < 0.1){
     RCLCPP_WARN(this->get_logger(), "distance arrived");
-    goal_th = G[2];
+    if (a==0)
+      goal_th = G1[2];
+    else
+      goal_th = G1[5];
+
     double error_th = goal_th - real_th;
 
     if(error_th >  PI)
@@ -123,6 +133,9 @@ void CmdPublisher::timer_cmd_callback() {
     if (abs(error_th) < 0.1){
       RCLCPP_WARN(this->get_logger(), "angular arrived"); 
       cmd_vel.angular.z = 0;
+      a++;
+      a = a % 2;
+      i_error_th = 0;
     }
   }
 
@@ -136,7 +149,7 @@ void CmdPublisher::timer_cmd_callback() {
   else if (cmd_vel.angular.z < -2.84)
     cmd_vel.angular.z = -2.84; 
   
-  RCLCPP_INFO(this->get_logger(), "destination [%f, %f]", goal_x, goal_y);
+  RCLCPP_INFO(this->get_logger(), "a & destination [%d, %f, %f]", a, goal_x, goal_y);
   RCLCPP_INFO(this->get_logger(), "error_d [%f, %f]", error_d, error_th);
   RCLCPP_INFO(this->get_logger(), "cmd_vel: [%f, %f]", cmd_vel.linear.x, cmd_vel.angular.z);
 

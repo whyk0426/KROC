@@ -19,8 +19,12 @@ private:
 
   void timer_cmd_callback();
 
-  double G[3];
+  // double G1[3];
+  // double G2[3];
+  double G1[6];
   std::string robot_name;
+
+  int a = 0;
 
   double real_x = 0;
   double real_y = 0;
