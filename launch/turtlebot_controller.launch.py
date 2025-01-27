@@ -20,7 +20,6 @@ publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 PI = math.pi
 
 def generate_launch_description():
-    #rviz_file = os.path.join(get_package_share_directory('merge_map'), 'config', 'merge_map.rviz')
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -31,71 +30,89 @@ def generate_launch_description():
                 ])
             ),
         ),
-
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(
+        #         PathJoinSubstitution([
+        #             FindPackageShare('ros2_turtlebot_controller'),
+        #             'launch',
+        #             'Alpha_cartographer.launch.py',
+        #         ])
+        #     ),
+        # ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 PathJoinSubstitution([
                     FindPackageShare('ros2_turtlebot_controller'),
                     'launch',
-                    'Alpha_cartographer.launch.py',
+                    'Romeo_cartographer.launch.py',
                 ])
             ),
         ),
     
-        Node(
-            package='ros2_turtlebot_controller',
-            namespace='Lima',
-            executable='cmd_publisher_node',
-            output='screen',
-            parameters=[{'goal1': [1, 0, PI, 0, 0, 0]},
-                        #{'goal2': [0, 0, 0]},
-                        {'robot_name': 'Lima'},                        
-                        ]
-        ),
-
-        Node(
-            package='ros2_turtlebot_controller',
-            namespace='Alpha',
-            executable='cmd_publisher_node',
-            output='screen',
-            parameters=[{'goal1': [1, 2, PI, 0, 2, 0]},
-                        #{'goal2': [1, 0, 0]},
-                        {'robot_name': 'Alpha'},  
-                        ]
-        ),
-
         # Node(
-        #     package='rviz2',
-        #     executable='rviz2',
-        #     name='rviz2',
+        #     package='ros2_turtlebot_controller',
+        #     namespace='Lima',
+        #     executable='cmd_publisher_node',
         #     output='screen',
-        #     arguments=['-d', rviz_file],
-        #     parameters=[{'use_sim_time': True}]
+        #     parameters=[{'goal1': [0.5, 0, PI, 0, 0, 0]},
+        #                 #{'goal2': [0, 0, 0]},
+        #                 {'robot_name': 'Lima'},                        
+        #                 ]
         # ),
-        
+        # Node(
+        #     package='ros2_turtlebot_controller',
+        #     namespace='Alpha',
+        #     executable='cmd_publisher_node',
+        #     output='screen',
+        #     parameters=[{'goal1': [0.5, 0.5, PI, 0, 0.5, 0]},
+        #                 {'robot_name': 'Alpha'},  
+        #                 ]
+        # ),
+        # Node(
+        #     package='ros2_turtlebot_controller',
+        #     namespace='Romeo',
+        #     executable='cmd_publisher_node',
+        #     output='screen',
+        #     parameters=[{'goal1': [1.5, 0.5, PI, 1, 0.5, 0]},
+        #                 {'robot_name': 'Romeo'},  
+        #                 ]
+        # ),
+
         Node(
             package='merge_map',
             executable='merge_map',
             output='screen',
             parameters=[{'use_sim_time': True}],
             remappings=[
-                ("/map1", "/Lima/map"),
-                ("/map2", "/Alpha/map"),
+                ("/map0", "/Lima/map"),
+                #("/map1", "/Alpha/map"),
+                ("/map1", "/Romeo/map"),
                 ],
         ),
-         Node(
+
+   
+
+        Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='static_transform_publisher',
             output='screen',
             arguments=['0', '0', '0', '0', '0', '0', 'map', 'Lima_map']
         ),
-         Node(
+        # Node(
+        #     package='tf2_ros',
+        #     executable='static_transform_publisher',
+        #     name='static_transform_publisher',
+        #     output='screen',
+        #     #arguments=['0', '0.5', '0', str(PI/4), '0', '0', 'map', 'Alpha_map'],
+        #     arguments=['0', '0', '0', '0', '0', '0', 'map', 'Alpha_map']
+        # ),
+        Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='static_transform_publisher',
             output='screen',
-            arguments=['0', '2', '0', '0', '0', '0', 'map', 'Alpha_map']
+            #arguments=['0', '0', '0', str(PI/4), '0', '0', 'map', 'Romeo_map']
+            arguments=['0', '0', '0', '0', '0', '0', 'map', 'Romeo_map']
         ),
-
     ])
