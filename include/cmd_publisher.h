@@ -6,6 +6,7 @@
 #include "visualization_msgs/msg/marker_array.hpp"
 #include "tf2_ros/buffer.h"
 #include "tf2_ros/transform_listener.h"
+#include "tf2/exceptions.h"
 
 const double PI = 3.14159265358979323846;
 
@@ -18,7 +19,12 @@ private:
 
   void timer_cmd_callback();
 
-  double G[3];
+  // double G1[3];
+  // double G2[3];
+  double G1[6];
+  std::string robot_name;
+
+  int a = 0;
 
   double real_x = 0;
   double real_y = 0;

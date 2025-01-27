@@ -31,14 +31,16 @@ def generate_launch_description():
     turtlebot3_cartographer_prefix = get_package_share_directory('ros2_turtlebot_controller')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
                                                   turtlebot3_cartographer_prefix, 'config'))
-    configuration_basename = LaunchConfiguration('configuration_basename',
-                                                 default='Lima_lds_2d.lua')
+    # configuration_basename = LaunchConfiguration('configuration_basename',
+    #                                              default='Lima_lds_2d.lua')
+    configuration_basename = 'Lima_lds_2d.lua'
 
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
-    rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),
-                                   'rviz', 'tb3_cartographer.rviz')
+    # rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),
+    #                                'rviz', 'tb3_cartographer.rviz')
+    rviz_config_dir = '/home/yk/merged_map.rviz'
 
     return LaunchDescription([
         DeclareLaunchArgument(
